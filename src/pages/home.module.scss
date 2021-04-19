@@ -1,1 +1,22 @@
 // TODO
+
+.container {
+  max-width: 1120px;
+  margin: 2.5rem auto;
+  padding: 0 2rem;
+  height: calc(100vh - 10rem);
+
+  display: flex;
+
+  // align-items: center;
+  justify-content: center;
+
+
+  button {
+    color: var(--pink-500);
+    background-color: transparent;
+    margin-top: 4rem;
+    border: none;
+  }
+
+}

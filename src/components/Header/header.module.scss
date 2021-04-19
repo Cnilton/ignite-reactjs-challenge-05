@@ -1,1 +1,35 @@
-// TODO
+
+.container {
+  width: 720px;
+  margin: 2.5rem auto;
+  // padding: 0 2rem;
+  // height: calc(100vh - 5rem);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+
+  a {
+    display: flex;
+    flex-direction: row;
+
+    h1 {
+      align-self: flex-start;
+      // margin-bottom: 60px;
+    }
+
+    img {
+      align-self: flex-start;
+      margin-right: 20px;
+      align-self: center;
+    }
+
+    span {
+      color: var(--pink-500);
+    }
+  }
+
+
+}
