@@ -52,7 +52,7 @@ export default function Post({ post }: PostProps): JSX.Element {
         readingTime += paragraph.text?.split(' ')?.length;
       });
     });
-    return Math.round(readingTime / 200);
+    return Math.ceil(readingTime / 200);
   }
 
   return (
@@ -63,7 +63,11 @@ export default function Post({ post }: PostProps): JSX.Element {
           <h1>{post.data.title}</h1>
           <section>
             <img src="/images/calendar.png" alt="Calendar" />
-            <time>{post.first_publication_date}</time>
+            <time>
+              {format(new Date(post.first_publication_date), 'dd MMM yyyy', {
+                locale: ptBR,
+              })}
+            </time>
             <img src="/images/user.png" alt="User" />
             <span>{post.data.author}</span>
             <img src="/images/clock.png" alt="Clock" />
@@ -74,9 +78,11 @@ export default function Post({ post }: PostProps): JSX.Element {
           return (
             <section key={topic.heading} className={styles.content}>
               <h2>{topic.heading}</h2>
-              {topic.body.map(paragraph => {
-                return <p key={paragraph.text}>{paragraph.text}</p>;
-              })}
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: RichText.asHtml(topic.body),
+                }}
+              />
             </section>
           );
         })}
@@ -105,15 +111,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const response = await prismic.getByUID('posts', String(slug), {});
 
   const post = {
-    first_publication_date: format(
-      new Date(response.first_publication_date),
-      'dd MMM yyyy',
-      {
-        locale: ptBR,
-      }
-    ),
+    uid: response.uid,
+    first_publication_date: response.first_publication_date,
     data: {
       title: response.data.title,
+      subtitle: response.data.subtitle,
       banner: { url: response.data.banner.url },
       author: response.data.author,
       content: response.data.content.map(({ heading, body }) => {

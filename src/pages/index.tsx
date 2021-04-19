@@ -41,10 +41,20 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
     fetch(nextPage)
       .then(response => response.json())
       .then((data: PostPagination) => {
-        const formattedData = postFormatter(data);
+        console.log(data.results.length);
+        data.results.map(result => {
+          result.first_publication_date = format(
+            new Date(result.first_publication_date),
+            'dd MMM yyyy',
+            {
+              locale: ptBR,
+            }
+          );
+          return result;
+        });
 
-        setPosts([...posts, ...formattedData.results]);
-        setNextPage(formattedData.next_page);
+        setPosts([...posts, ...data.results]);
+        setNextPage(data.next_page);
       });
   }
 
@@ -54,7 +64,7 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         <title>Home | spacetraveling</title>
       </Head>
       <main className={styles.container}>
-        {/* <Header /> */}
+        <Header />
         <section>
           <Posts posts={posts ?? []} />
           {nextPage && (
@@ -78,11 +88,24 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   );
 
-  const postsPagination = postFormatter(response);
+  const posts: Post[] = response?.results?.map((post: Post) => {
+    return {
+      uid: post?.uid,
+      data: {
+        title: post?.data.title,
+        subtitle: post?.data?.subtitle,
+        // post?.data?.subtitle.find(content => content.type === 'paragraph')
+        //   ?.text ?? '',
+        author: post?.data.author,
+      },
+
+      first_publication_date: post?.first_publication_date,
+    };
+  });
 
   return {
     props: {
-      postsPagination,
+      postsPagination: { results: posts, next_page: response.next_page },
     },
   };
 };

@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import styles from './styles.module.scss';
 
 interface PostItem {
@@ -27,7 +29,15 @@ function Posts({ posts }: PostProps): JSX.Element {
                 <p>{postItem.data.subtitle}</p>
                 <div>
                   <img src="/images/calendar.png" alt="Calendar Icon" />
-                  <time>{postItem.first_publication_date}</time>
+                  <time>
+                    {format(
+                      new Date(postItem.first_publication_date),
+                      'dd MMM yyyy',
+                      {
+                        locale: ptBR,
+                      }
+                    )}
+                  </time>
 
                   <img src="/images/user.png" alt="User Icon" />
                   <span>{postItem.data.author}</span>
